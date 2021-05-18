@@ -37,6 +37,7 @@ var highScores = [];
 var contentArea = document.querySelector("#content-area");
 var score = 100;
 var totalQuizTime = 120;
+var testActive = true;
 
 
 // Home screen and eventListener Functions --------------------------------------------------------------------
@@ -44,18 +45,29 @@ var totalQuizTime = 120;
 
 function setHomeScreen() {
     //Creates the initial html elements for the home screen or start quiz screen
+    transitionDeletion();
+    var introTextDiv = document.createElement("div");
+    introTextDiv.className = "main-content-div";
+    contentArea.appendChild(introTextDiv);
+
     var introHeading = document.createElement("h2");
     introHeading.className = "quiz-title";
     introHeading.innerText = "Coding Quiz Challange"
-    contentArea.appendChild(introHeading);
+    introTextDiv.appendChild(introHeading);
 
     var introDescription = document.createElement("p");
     introDescription.className = "description";
     introDescription.innerText = "Welcome to this short Coding Quiz Challange! Try to answer all the questions as fast as you can and get as many right as you can. Your total score will be based on how fast and accuratly you complete the test. Good luck!";
-    contentArea.appendChild(introDescription);
+    introTextDiv.appendChild(introDescription);
+
+    var startQuizDiv = document.createElement("div");
+    startQuizDiv.className = "start-quiz-div";
+    introTextDiv.appendChild(startQuizDiv);
 
     var startQuizBtn = document.createElement("button");
-    startQuizBtn.className = "start-quiz-button";
+    startQuizBtn.className = "start-quiz-btn";
+    startQuizBtn.innerText = "Start Quiz!";
+    startQuizDiv.appendChild(startQuizBtn);
 }
 
 function highScoresClick() {
@@ -79,10 +91,49 @@ function contentAreaClick(event) {
 
 function viewHighScores() {
     //Changes HTML of page to the view High scores page
+    transitionDeletion();
+    var viewHighScoreDiv = document.createElement("div");
+    viewHighScoreDiv.className = "main-content-div";
+    contentArea.appendChild(viewHighScoreDiv);
+
+    var listDiv = document.createElement("div");
+    listDiv.className = "hs-list-div";
+    viewHighScoreDiv.appendChild(listDiv);
+
+    var listHeader = document.createElement("h2");
+    listHeader.className = "list-header";
+    listHeader.textContent = "Top 5 High Scores!";
+    listDiv.appendChild(listHeader);
+
+    var listEl = document.createElement("ul");
+    listEl.className = "hs-ul";
+    listDiv.appendChild(listEl);
+
+    if (highScores.length === 0) {
+        var noScore = document.createElement("li");
+        noScore.className = "high-score-display";
+        noScore.innerText = "Their are currently no scores recorded. Please take the test to display your top scores!";
+        listEl.appendChild(noScore);
+
+        var noScores = document.createElement("li");
+        noScores.className = "high-score-display";
+        noScores.innerText = "Their are currently no scores recorded. Please take the test to display your top scores!";
+        listEl.appendChild(noScores);
+    }
+    else {
+
+    }
 }
 
 function timerStart() {
     //Creates the timer at the top of the page
+}
+
+function transitionDeletion() {
+    var deletion = document.querySelector(".main-content-div");
+    if (deletion != null) {
+        deletion.remove();
+    }
 }
 
 
@@ -90,14 +141,24 @@ function timerStart() {
 
 function initializeQuiz() {
     //Initilizes the quiz based on if the button from home screen is high duh
+    transitionDeletion();
+
 }
 
 function question() {
     //sets up the question HMTL based on the question number index
+    if (quizQuestions === 6) {
+        quizCompleted();
+        return null;
+    }
+    transitionDeletion();
+    testActive = true;
+
 }
 
 function answerSelection() {
     //disides what to do based on what answer was picked
+
 }
 
 function wrongAnswer() {
@@ -152,7 +213,7 @@ function quizCompleted(endTime) {
             newHighScoreMath(largerThan, scoreIndex);
         }
     }
-    else if (highScores === []) {
+    else if (highScores.length === 0) {
         newHighestScore(scoreIndex);
     }
     score = 100;
@@ -203,6 +264,13 @@ function newHighestScore(scoreIndex) {
 function didNotBeatHighScore() {
     //Inform the player they did not beat the high score, display high score
 
+}
+
+function submitHighScore() {
+    alert("Your High Score Has Been Submitied!");
+    testActive = false;
+    saveHighScores();
+    setHomeScreen();
 }
 
 function saveHighScores() {
