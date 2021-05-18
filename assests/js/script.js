@@ -87,6 +87,14 @@ function highScoresClick() {
 
 function contentAreaClick(event) {
     targetEl = event.target;
+
+    if (targetEl.matches(".start-quiz-btn")) {
+        initializeQuiz();
+    }
+
+    else if (targetEl.matches(".answer-btn")) {
+        answerSelection(targetEl);
+    }
 }
 
 function viewHighScores() {

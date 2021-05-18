@@ -16,7 +16,7 @@ body {
     --high-score-list: rgb(0, 193, 241);
 }
 
-header {
+.header {
     padding: 30px 25px;
 }
 
