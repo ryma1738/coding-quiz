@@ -14,14 +14,23 @@ body {
     --button-color: rgb(0, 132, 172);
     --shadow: rgba(0, 0, 0, 0.75);
     --high-score-list: rgb(0, 193, 241);
+    --relay-answer: rgba(143, 143, 143, 0.9);
 }
+
+/* Header Styles */
 
 .header {
     padding: 30px 25px;
+    display: flex;
+    justify-content: left;
+    width: 100%;
+}
+
+.heading-highscore {
+    width: 70%;
 }
 
 .see-high-scores {
-    float: left;
     padding: 10px 15px;
     background-color: var(--button-color);
     font-size: 1.5vw;
@@ -31,6 +40,21 @@ body {
 .see-high-scores:hover {
     box-shadow: 1px 1px 5px var(--shadow);
 }
+
+.timer-div {
+    width: 30%;
+    justify-content: right;
+}
+
+.timer {
+    text-align: right;
+    padding: 10px 30px;
+    font-style: 2.5vw;
+
+}
+
+/* Header Styles End*/
+/* JavaScript Created Content starts */
 
 .content-area {
     margin: 20px 50px;
@@ -42,6 +66,8 @@ body {
     margin: 0 75px;
     width: 100%
 }
+
+/* Styles for Home Page Start */
 
 .quiz-title {
     text-align: center;
@@ -74,6 +100,8 @@ body {
 .start-quiz-btn:hover {
     box-shadow: 1px 1px 5px var(--shadow);
 }
+/* Styles for Home Page End */
+/* Styles for HighScores Start */
 
 .hs-list-div {
     margin: 50px 20%;
@@ -104,4 +132,91 @@ body {
     border-bottom: 1px solid black;
     font-size: 1.5vw;
     padding: 10px 15px;
+}
+
+/* Styles for HighScores ends */
+/* Styles for Questions Start */
+
+.question-div {
+    display: flex;
+    justify-content: left;
+    margin-top: 100px;
+
+}
+
+.question-head {
+    font-size: 4.5vw;
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.answers-div {
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.answer-buttons {
+    margin: 10px 10px;
+    width: 100%;
+
+}
+
+.answer-button {
+    width: 35%;
+    padding: 15px 15px;
+    background-color: var(--button-color);
+    border-radius: 10px;
+    font-size: 2.0vw;
+    text-align: left;
+}
+
+.answer-button:hover {
+    background-color: var(--high-score-list);
+    box-shadow: 1px 1px 7px var(--shadow);
+}
+
+.answer-button:active {
+    box-shadow: none;
+    background-color: var(--shadow);
+    color: white;
+}
+
+.bottom-div {
+    width: 100%;
+    border-top: 3px solid var(--relay-answer);
+    margin: 50px 10px;
+}
+
+.relay-answer {
+    font-size: 3.0vw;
+    font-style: italic;
+    font-weight: bold;
+    color: var(--relay-answer);
+    text-align: left;
+    margin: 20px;
+}
+
+/* Styles for Questions End */
+/* Styles for End of quiz Start */
+
+.end-screen-container {
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+    margin-top: 100px;
+}
+
+.end-screen-div {
+    margin: 10px 10px;
+}
+
+.all-done {
+    font-size: 5.0vw;
+    font-weight: bold;
+}
+
+.end-score {
+    font-size: 2.0vw;
 }
