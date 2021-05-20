@@ -27,7 +27,7 @@ body {
 }
 
 .heading-highscore {
-    width: 70%;
+    width: 90%;
 }
 
 .see-high-scores {
@@ -42,8 +42,12 @@ body {
 }
 
 .timer-div {
-    width: 30%;
+    width: 10%;
     justify-content: right;
+    text-align: right;
+    padding: 10px 30px;
+    font-style: 2.5vw;
+
 }
 
 .timer {

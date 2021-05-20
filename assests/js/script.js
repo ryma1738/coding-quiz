@@ -43,7 +43,7 @@ var header = document.querySelector("#header");
 var highScoresLink = true;
 var highScores = [];
 var contentArea = document.querySelector("#content-area");
-var score = 100;
+var score = 0;
 var totalQuizTime = 120;
 var quizTime = 120;
 var timerEnd = false;
@@ -231,7 +231,7 @@ function transitionDeletion() {
 
 function reset() {
     questionNumber = 0;
-    score = 100;
+    score = 0;
     quizTime = 120;
     timerEnd = false;
     timer = null;
@@ -358,15 +358,16 @@ function answerSelection(targetEl) {
 function wrongAnswer() {
     //Determains what happens if you get an answer wrong
     relay = "Incorrect!";
-    score = score - 20;
     quizTime = quizTime - 10;
     questionNumber++;
     question();
+    console.log("wrong")
 }
 
 function rightAnswer() {
     //Determains what happens if you get an answer right
     relay = "Correct!";
+    score = score + 20;
     questionNumber++;
     question();
 }
@@ -375,11 +376,13 @@ function quizCompleted() {
     //Closes out quiz, gives your score, sees if your score beates the high score (high score is based on time and answers)\
     transitionDeletion();
     timerEnd = true;
+    console.log("complete")
     if (score === 100) {
         var tempScore = score + 100;
     }
     else {
         var tempScore = score;
+        console.log("tempScore")
     }
     scoreIndex = {
         totalScore: Math.max(0, tempScore + (quizTime - totalQuizTime) + 5),
@@ -387,6 +390,7 @@ function quizCompleted() {
         time: totalQuizTime - quizTime,
         name: ""
     };
+    console.log("scoreIndex")
 
     if (highScores.length === 1) {
         if (scoreIndex.totalScore > highScores[0].totalScore) {
@@ -400,15 +404,15 @@ function quizCompleted() {
         var largerThan = [];
 
         for (var i = 0; i < highScores.length; i++) {
-                var player = scoreIndex.totalScore;
-                var higherPlayer = highScores[i].totalScore;
-                if (scoreIndex.totalScore <= higherPlayer) {
+                if (scoreIndex.totalScore <= highScores[i].totalScore) {
                     largerThan[i] = false;
                 }
-                else if (scoreIndex.totalScore > higherPlayer) {
+                else if (scoreIndex.totalScore > highScores[i].totalScore) {
                     largerThan[i] = true;
                 }
         }
+        console.log("for loop")
+        console.log(largerThan.length)
         
         if (largerThan.length >= 5) {
             if (largerThan[4] === false) {
@@ -434,8 +438,10 @@ function quizCompleted() {
 
 function newHighScoreMath(possition) {
     //IF the player got a higher score than the top 5 (does not count if < 1 score is saved to LocalStorage) THEN determain the scores ranking
+   console.log(possition)
     var index = false;
     var i = 0;
+    var total = possition.length;
     while (index === false) {
         if (possition[i] === true) {
             if (i === 0) {
@@ -446,6 +452,10 @@ function newHighScoreMath(possition) {
             }
             index = true;
         }
+        else if (i === total) {
+            index = true;
+            newHighScore(i);
+        }
         else {
             i++;
         }
@@ -454,7 +464,9 @@ function newHighScoreMath(possition) {
 
 function newHighScore(rank) {
     //based off the rank of the new high score, print to screen, rank and score and input new score into localStorage (also ask for player initals)
+    console.log("start newHighScore")
     highScores.splice(rank, 0, scoreIndex);
+    console.log("splice")
 
     var endScreen = endScreenEl();
     contentArea.appendChild(endScreen);
@@ -462,11 +474,12 @@ function newHighScore(rank) {
     var place = ["st", "nd", "rd", "th", "th"];
     var highScore = document.createElement("div");
     highScore.className = "end-screen-div";
-    highScore.innerHTML = "<p class='end-score'>You got the " + (rank + 1 ) + place[rank]+ " highest score! With a total score of:" + scoreIndex.totalScore + "!";
+    highScore.innerHTML = "<p class='end-score'>You got the " + (rank + 1 ) + place[rank]+ " highest score! With a total score of: " + scoreIndex.totalScore + "!";
     endScreen.appendChild(highScore);
 
     var form = highScoreForm();
     endScreen.appendChild(form);
+    console.log("newhighscore")
 }
 
 function newHighestScore() {
@@ -494,6 +507,7 @@ function didNotBeatHighScore() {
     highScore.className = "end-screen-div";
     highScore.innerHTML = "<p class='end-score'>You did not beat the high score. Better luck next time!";
     endScreen.appendChild(highScore);
+    console.log("did not beat")
     reset();
     setTimeout(setHomeScreen, 5000);
 
@@ -501,6 +515,7 @@ function didNotBeatHighScore() {
 }
 
 function endScreenEl() {
+    //Createst he standered text for the end screen
     var endScreen = document.createElement("div");
     endScreen.className = "main-content-div";
 
@@ -518,7 +533,7 @@ function endScreenEl() {
 }
 
 function highScoreForm() {
-    //Creates the form for inputing the 
+    //Creates the form for inputing the players name
     var initialsForm = document.createElement('form');
     initialsForm.className = "end-screen-form";
     initialsForm.setAttribute("id", "high-score-form");
@@ -537,6 +552,7 @@ function highScoreForm() {
 }
 
 function submitHighScore() {
+    //submits the high score and resets everything
     alert("Your High Score Has Been Submitied!");
     saveHighScores();
     setHomeScreen();
@@ -544,6 +560,7 @@ function submitHighScore() {
 }
 
 function saveHighScores() {
+    //Saves the high scores to localStorage
     if (highScores.length > 5) {
         highScores.splice(5, 1);
     }
@@ -559,8 +576,9 @@ function initialHighScores() {
         return highScores;
     }
 
-    //localStorage.removeItem('highScores');
+    
     highScores = JSON.parse(highScores);
+    //localStorage.removeItem('highScores');
     console.log(highScores);
 }
 
