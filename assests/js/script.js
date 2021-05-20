@@ -53,6 +53,7 @@ var testTimerActive = false;
 var answerToQuestion = 0;
 var transition = false;
 var relay = "";
+var scoreIndex = {};
 
 
 
@@ -123,9 +124,20 @@ function contentAreaClick(event) {
 }
 
 function contentAreaSubmit(event) {
+    event.preventDefault();
     targetEl = event.target;
 
-    if (targetEl.matches("#end-screen-form")) {
+    if (targetEl.matches("#high-score-form")) {
+        var name = document.querySelector("input[name='name']").value;
+        if (name) {
+            name = name.toUpperCase();
+            scoreIndex.name = name;
+            submitHighScore();
+        }
+        else {
+            alert("Please enter a name to save your high score!");
+        }
+        
 
     }
 }
@@ -157,7 +169,12 @@ function viewHighScores() {
         listEl.appendChild(noScore);
     }
     else {
-
+        for (var i = 0; i < highScores.length; i++) {
+            var score = document.createElement("li");
+        score.className = "high-score-display";
+        score.innerHTML = "<p><span>" + (i + 1) + ". " + highScores[i].name + ":</span> got a score of " + highScores[i].score + "% and a time of " + highScores[i].time + " seconds.</p>";
+        listEl.appendChild(score);
+        }
     }
 }
 
@@ -223,6 +240,7 @@ function reset() {
     answerToQuestion = 0;
     transition = false;
     relay = "";
+    scoreIndex = {};
 }
 
 
@@ -363,7 +381,7 @@ function quizCompleted() {
     else {
         var tempScore = score;
     }
-    var scoreIndex = {
+    scoreIndex = {
         totalScore: Math.max(0, tempScore + (quizTime - totalQuizTime) + 5),
         score: score,
         time: totalQuizTime - quizTime,
@@ -372,32 +390,41 @@ function quizCompleted() {
 
     if (highScores.length === 1) {
         if (scoreIndex.totalScore > highScores[0].totalScore) {
-            newHighestScore(scoreIndex);   
+            newHighestScore();   
         }
         else {
-            newHighScore(1, scoreIndex);
+            newHighScore(1);
         }
     }
     else if (highScores.length > 1) {
         var largerThan = [];
-        for (var i = 0; i > highScores.length; i++) {
-            if (scoreIndex.totalScore < highScores[i].totalScore) {
-                largerThan[i] = false;
+
+        for (var i = 0; i < highScores.length; i++) {
+                var player = scoreIndex.totalScore;
+                var higherPlayer = highScores[i].totalScore;
+                if (scoreIndex.totalScore <= higherPlayer) {
+                    largerThan[i] = false;
+                }
+                else if (scoreIndex.totalScore > higherPlayer) {
+                    largerThan[i] = true;
+                }
+        }
+        
+        if (largerThan.length >= 5) {
+            if (largerThan[4] === false) {
+                didNotBeatHighScore();
             }
-            else if (scoreIndex.totalScore > highScores[i].totalScore) {
-                largerThan[i] = true;
+            else if (largerThan[4] === true) {
+                newHighScoreMath(largerThan);
             }
         }
-        var totalCurrentScores = largerThan.length - 1;
-        if (largerThan[totalCurrentScores] === false) {
-            didNotBeatHighScore();
-        }
-        else if (largerThan[totalCurrentScores] === true) {
-            newHighScoreMath(largerThan, scoreIndex);
+        else {
+            newHighScoreMath(largerThan);
         }
     }
+
     else if (highScores.length === 0) {
-        newHighestScore(scoreIndex);
+        newHighestScore();
     } 
 }
 
@@ -405,17 +432,17 @@ function quizCompleted() {
 //Saving and adding new High scores / getting high scores from local storage -------------------------
 
 
-function newHighScoreMath(possition, scoreIndex) {
+function newHighScoreMath(possition) {
     //IF the player got a higher score than the top 5 (does not count if < 1 score is saved to LocalStorage) THEN determain the scores ranking
     var index = false;
     var i = 0;
     while (index === false) {
         if (possition[i] === true) {
             if (i === 0) {
-                newHighestScore(scoreIndex); 
+                newHighestScore(); 
             }
             else {
-                newHighScore(i, scoreIndex);
+                newHighScore(i);
             }
             index = true;
         }
@@ -425,25 +452,28 @@ function newHighScoreMath(possition, scoreIndex) {
     }
 }
 
-function newHighScore(rank, scoreIndex) {
+function newHighScore(rank) {
     //based off the rank of the new high score, print to screen, rank and score and input new score into localStorage (also ask for player initals)
     highScores.splice(rank, 0, scoreIndex);
 
-    var endScreen = endScreenEl(scoreIndex);
+    var endScreen = endScreenEl();
     contentArea.appendChild(endScreen);
 
     var place = ["st", "nd", "rd", "th", "th"];
     var highScore = document.createElement("div");
     highScore.className = "end-screen-div";
-    highScore.innerHTML = "<p class='end-score'>You got the " + rank + place[rank]+ " highest score! With a total score of:" + scoreIndex.totalScore + "!";
+    highScore.innerHTML = "<p class='end-score'>You got the " + (rank + 1 ) + place[rank]+ " highest score! With a total score of:" + scoreIndex.totalScore + "!";
     endScreen.appendChild(highScore);
+
+    var form = highScoreForm();
+    endScreen.appendChild(form);
 }
 
-function newHighestScore(scoreIndex) {
+function newHighestScore() {
     //IF the player got the highest score out of the top 5, print to screen and get initials for score board
     highScores.splice(0, 0, scoreIndex);
 
-    var endScreen = endScreenEl(scoreIndex);
+    var endScreen = endScreenEl();
     contentArea.appendChild(endScreen);
 
     var highScore = document.createElement("div");
@@ -451,23 +481,26 @@ function newHighestScore(scoreIndex) {
     highScore.innerHTML = "<p class='end-score'>You beat the High Score with a total score of: " + scoreIndex.totalScore + "!";
     endScreen.appendChild(highScore);
 
-
+    var form = highScoreForm();
+    endScreen.appendChild(form);
 }
 
 function didNotBeatHighScore() {
     //Inform the player they did not beat the high score, display high score
-    var endScreen = endScreenEl(scoreIndex);
+    var endScreen = endScreenEl();
     contentArea.appendChild(endScreen);
 
     var highScore = document.createElement("div");
     highScore.className = "end-screen-div";
     highScore.innerHTML = "<p class='end-score'>You did not beat the high score. Better luck next time!";
     endScreen.appendChild(highScore);
+    reset();
+    setTimeout(setHomeScreen, 5000);
 
     
 }
 
-function endScreenEl(scoreIndex) {
+function endScreenEl() {
     var endScreen = document.createElement("div");
     endScreen.className = "main-content-div";
 
@@ -478,7 +511,7 @@ function endScreenEl(scoreIndex) {
 
     var scoreDiv = document.createElement("div");
     scoreDiv.className = "end-screen-div";
-    scoreDiv.innerHTML = "<p class='end-score-p'>You got a total score of: " + scoreIndex.totalScore + "  and got " + score + "% of the questions right!";
+    scoreDiv.innerHTML = "<p class='end-score'>You got a total score of: " + scoreIndex.totalScore + "  and got " + score + "% of the questions right!";
     endScreen.appendChild(scoreDiv);
 
     return endScreen;
@@ -486,6 +519,21 @@ function endScreenEl(scoreIndex) {
 
 function highScoreForm() {
     //Creates the form for inputing the 
+    var initialsForm = document.createElement('form');
+    initialsForm.className = "end-screen-form";
+    initialsForm.setAttribute("id", "high-score-form");
+    
+    var formDivText = document.createElement("div");
+    formDivText.className = "form-div-text";
+    formDivText.innerHTML = "<input type='text' name='name' placeholder='Enter Name / Initals Here' />";
+    initialsForm.appendChild(formDivText);
+
+    var formDivButton = document.createElement("div");
+    formDivButton.className = "form-div-button";
+    formDivButton.innerHTML = "<button class='form-button' id='form-button'>Save High Score</button>";
+    initialsForm.appendChild(formDivButton);
+
+    return initialsForm;
 }
 
 function submitHighScore() {
@@ -497,7 +545,7 @@ function submitHighScore() {
 
 function saveHighScores() {
     if (highScores.length > 5) {
-        highScores[5].remove();
+        highScores.splice(5, 1);
     }
     localStorage.setItem("highScores", JSON.stringify(highScores));
 }
@@ -505,14 +553,15 @@ function saveHighScores() {
 function initialHighScores() {
     //saves the high scores from local storage to active web script to the high scores var
     highScores = localStorage.getItem("highScores");
-    console.log(highScores);
 
     if (highScores === null) {
         highScores = [];
         return highScores;
     }
 
+    //localStorage.removeItem('highScores');
     highScores = JSON.parse(highScores);
+    console.log(highScores);
 }
 
 
@@ -521,6 +570,7 @@ function initialHighScores() {
 
 setHomeScreen();
 initialHighScores();
+highScores.splice(5, 1);
 seeHighScores.addEventListener("click", highScoresClick);
 contentArea.addEventListener("click", contentAreaClick);
 contentArea.addEventListener("submit", contentAreaSubmit);
