@@ -130,9 +130,14 @@ function contentAreaSubmit(event) {
     if (targetEl.matches("#high-score-form")) {
         var name = document.querySelector("input[name='name']").value;
         if (name) {
-            name = name.toUpperCase();
-            scoreIndex.name = name;
-            submitHighScore();
+            if (name.length < 4){
+                name = name.toUpperCase();
+                scoreIndex.name = name;
+                submitHighScore();
+            }
+            else {
+                alert("You must enter only your initals. Max length is 3 characters!")
+            }
         }
         else {
             alert("Please enter a name to save your high score!");
@@ -540,7 +545,7 @@ function highScoreForm() {
     
     var formDivText = document.createElement("div");
     formDivText.className = "form-div-text";
-    formDivText.innerHTML = "<input type='text' name='name' placeholder='Enter Name / Initals Here' />";
+    formDivText.innerHTML = "<input type='text' name='name' placeholder='Enter Initals Here' />";
     initialsForm.appendChild(formDivText);
 
     var formDivButton = document.createElement("div");
@@ -575,8 +580,6 @@ function initialHighScores() {
         highScores = [];
         return highScores;
     }
-
-    
     highScores = JSON.parse(highScores);
     //localStorage.removeItem('highScores');
     console.log(highScores);
