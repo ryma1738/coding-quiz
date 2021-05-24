@@ -1,9 +1,9 @@
 var quizQuestions = [
     "Commonly used data types in javascript include all of the following EXCEPT:", 
-    "A usful tool provided by Chrome Dev Tools to help diagnose issues in Javascript is:", 
+    "A useful tool provided by Chrome Dev Tools to help diagnose issues in Javascript is:", 
     "Inorder to create a random number you must use _________.random().", 
-    "What is a statement that is simaler to an if / else statement?",
-    "The proper way to diclare a function statement is 'function ____________':"
+    "What is a statement that is similar to an if / else statement?",
+    "The proper way to declare a function statement is 'function ____________':"
 ];
 var quizQuestionAnswers = [
     {
@@ -69,12 +69,12 @@ function setHomeScreen() {
 
     var introHeading = document.createElement("h2");
     introHeading.className = "quiz-title";
-    introHeading.innerText = "Coding Quiz Challange"
+    introHeading.innerText = "Coding Quiz Challenge"
     introTextDiv.appendChild(introHeading);
 
     var introDescription = document.createElement("p");
     introDescription.className = "description";
-    introDescription.innerText = "Welcome to this short Coding Quiz Challange! Try to answer all the questions as fast as you can and get as many right as you can. Your total score will be based on how fast and accuratly you complete the test. Good luck!";
+    introDescription.innerText = "Welcome to this short Coding Quiz Challenge! Try to answer all the questions as fast as you can and get as many right as you can. Your total score will be based on how fast and accurately you complete the test. Good luck!";
     introTextDiv.appendChild(introDescription);
 
     var startQuizDiv = document.createElement("div");
@@ -170,7 +170,7 @@ function viewHighScores() {
     if (highScores.length === 0) {
         var noScore = document.createElement("li");
         noScore.className = "high-score-display";
-        noScore.innerText = "Their are currently no scores recorded. Please take the test to display your top scores!";
+        noScore.innerText = "There are currently no scores recorded. Please take the test to display your top scores!";
         listEl.appendChild(noScore);
     }
     else {
