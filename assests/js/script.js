@@ -581,7 +581,7 @@ function initialHighScores() {
         return highScores;
     }
     highScores = JSON.parse(highScores);
-    //localStorage.removeItem('highScores');
+    //localStorage.removeItem('highScores'); //Use this to reset the highscores
     console.log(highScores);
 }
 
